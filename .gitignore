@@ -1,3 +1,5 @@
+# Idea folder
+
 .idea/
 
 uw-bubble.iml
@@ -5,3 +7,7 @@ uw-bubble.iml
 */.idea/
 
 */*.iml
+
+# Logging folder
+
+log/
