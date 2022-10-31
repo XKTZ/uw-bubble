@@ -1,3 +1,7 @@
-**/.idea/
+.idea/
 
-**/*.iml
+uw-bubble.iml
+
+*/.idea/
+
+*/*.iml
