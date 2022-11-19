@@ -9,7 +9,7 @@ from torch.utils.tensorboard import SummaryWriter
 
 from domain.user import User, match_user
 from model.model import UserMatchUpModel
-from util.ProgressBar import ProgressBar
+from model.util.ProgressBar import ProgressBar
 
 
 class UserMatcher:
@@ -85,7 +85,7 @@ class AIModelBasedUserMatcher(UserMatcher):
     def __init__(self, device: torch.device = torch.device("cpu:0"), log_dir: str = "log",
                  past_length_maintain: int = 32):
         super(AIModelBasedUserMatcher, self).__init__()
-        self._model = UserMatchUpModel(User.feature_size() * 2, [256, 256]).to(device)
+        self._model = UserMatchUpModel(User.feature_size() * 2, [512, 512]).to(device)
         self._device = device
         self._optim = torch.optim.Adam(self._model.parameters(), 1e-4)
         self._loss = nn.MSELoss()

@@ -33,7 +33,11 @@ def gender_diff(a, b):
     return 1 if (Gender.Other in (a, b)) or a != b else 0.5
 
 
+x = 0
+
+
 class Marker:
+    factor: float
     age: float
     age_pow: float
     same_interests: float
@@ -48,6 +52,7 @@ class Marker:
     max_base: float
 
     def __init__(self,
+                 factor: float,
                  age: float, age_pow: float,
                  same_interests: float, same_interests_pow: float,
                  diff_interests: float, diff_interests_pow: float,
@@ -56,6 +61,7 @@ class Marker:
                  bias: float,
                  max_base: float = 1200):
         super(Marker, self).__init__()
+        self.factor = factor
         self.age = age
         self.age_pow = age_pow
         self.same_interests = same_interests
@@ -82,14 +88,23 @@ class Marker:
             + faculty_same_factor * (same_faculty?)
             + faculty_diff_factor * (different_faculty?)
         """
-        return sigmoid(self.age * (abs(user_from.age - user_to.age)) ** self.age_pow \
-                       + self.same_interests * count_same(user_from.interests,
-                                                          user_to.interests) ** self.same_interests_pow \
-                       + self.diff_interests * count_diff(user_from.interests,
-                                                          user_to.interests) ** self.diff_interests_pow \
-                       + self.gender * gender_diff(user_from.age, user_to.age) ** self.gender_pow \
-                       + self.faculty_same * (1 if user_from.program == user_to.program else 0) \
-                       + self.faculty_diff * (1 if user_from.program == user_to.program else 0))
+        global x
+        x += (self.age * (abs(user_from.age - user_to.age)) ** self.age_pow \
+              + self.same_interests * count_same(user_from.interests,
+                                                 user_to.interests) ** self.same_interests_pow \
+              + self.diff_interests * count_diff(user_from.interests,
+                                                 user_to.interests) ** self.diff_interests_pow \
+              + self.gender * gender_diff(user_from.age, user_to.age) ** self.gender_pow \
+              + self.faculty_same * (1 if user_from.program == user_to.program else 0) \
+              + self.faculty_diff * (1 if user_from.program == user_to.program else 0))
+        return sigmoid(self.factor * (self.age * (abs(user_from.age - user_to.age)) ** self.age_pow \
+                                      + self.same_interests * count_same(user_from.interests,
+                                                                         user_to.interests) ** self.same_interests_pow \
+                                      + self.diff_interests * count_diff(user_from.interests,
+                                                                         user_to.interests) ** self.diff_interests_pow \
+                                      + self.gender * gender_diff(user_from.age, user_to.age) ** self.gender_pow \
+                                      + self.faculty_same * (1 if user_from.program == user_to.program else 0) \
+                                      + self.faculty_diff * (1 if user_from.program == user_to.program else 0)))
 
 
 def random_pick_3_interests() -> List[int]:
@@ -120,11 +135,12 @@ def rand_user() -> User:
 matcher = AIModelBasedUserMatcher(torch.device("cuda"))
 
 marker = Marker(
-    age=1.0, age_pow=1.5,
-    same_interests=1.0, same_interests_pow=2.4,
-    diff_interests=1.5, diff_interests_pow=0.8,
-    gender=6.0, gender_pow=2,
-    faculty_same=1.2, faculty_diff=0.6,
+    factor=1 / 30,
+    age=3.0, age_pow=2.0,
+    same_interests=5.0, same_interests_pow=2.4,
+    diff_interests=2.0, diff_interests_pow=0.8,
+    gender=15.0, gender_pow=2,
+    faculty_same=3.0, faculty_diff=0.6,
     bias=2.0,
 )
 
