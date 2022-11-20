@@ -6,12 +6,12 @@
       </div>
     </el-header>
     <el-main style="margin: auto;">
-      <el-input class="interact-component" v-model="username" placeholder="Email"/>
-      <el-input class="interact-component" v-model="password" placeholder="Password" show-password/>
-      <el-button class="interact-component" style="width: 60%;" @click="login" type="primary">
+      <el-input class="interact-component options" v-model="username" placeholder="Email"/>
+      <el-input class="interact-component options" v-model="password" placeholder="Password" show-password/>
+      <el-button class="interact-component options" style="width: 60%;" @click="login" type="primary">
         Login
       </el-button>
-      <el-button class="interact-component" style="width: 60%; margin-left: 0;" @click="toRegister" type="info">
+      <el-button class="interact-component options" style="width: 60%; margin-left: 0;" @click="toRegister" type="info">
         To Register
       </el-button>
     </el-main>
@@ -61,6 +61,11 @@ export default {
 </script>
 
 <style scoped>
+.options {
+  width: 60%;
+  height: 40px;
+}
+
 .interact-component {
   margin-top: 2%;
   margin-bottom: 2%;
