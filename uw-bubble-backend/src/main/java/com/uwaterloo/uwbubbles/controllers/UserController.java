@@ -1,8 +1,7 @@
 package com.uwaterloo.uwbubbles.controllers;
 
-import com.uwaterloo.uwbubbles.config.JwtTokenUtil;
 import com.uwaterloo.uwbubbles.dao.User;
-import com.uwaterloo.uwbubbles.dto.RecommendationRequest;
+import com.uwaterloo.uwbubbles.dto.AI;
 import com.uwaterloo.uwbubbles.dto.RecommendationResponse;
 import com.uwaterloo.uwbubbles.repositories.UserRepository;
 import com.uwaterloo.uwbubbles.services.UserService;
@@ -11,12 +10,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,9 +22,6 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
     private UserRepository userRepository;
@@ -82,9 +76,4 @@ public class UserController {
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
-    @GetMapping("users/webclient-test/")
-    public ResponseEntity<Map<Long, Double>> test(@RequestBody RecommendationRequest req) {
-        Map<Long, Double> res = new HashMap<>(); res.put(7L, 0.9); res.put(8L, 0.02);
-        return new ResponseEntity<>(res, HttpStatus.OK);
-    }
 }

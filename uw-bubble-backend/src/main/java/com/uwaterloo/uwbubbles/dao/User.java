@@ -1,6 +1,7 @@
 package com.uwaterloo.uwbubbles.dao;
 
 import com.uwaterloo.uwbubbles.types.IntArrayUserType;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -9,6 +10,7 @@ import org.hibernate.annotations.TypeDefs;
 import javax.persistence.*;
 
 @Data
+@AllArgsConstructor
 @Entity
 @Table(name = "users")
 @TypeDefs({
@@ -20,7 +22,7 @@ import javax.persistence.*;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private Long id;
     private String username;
     private String name;
     private String email;
@@ -34,6 +36,8 @@ public class User {
     // 5 - Science
     private int faculty;
     private int gender;
+
+    private int age;
     private boolean enabled;
 
     @Type(type = "integer-array")
@@ -42,24 +46,6 @@ public class User {
         columnDefinition = "integer[]"
     )
     private Integer[] interests;
-
-    public User(String username,
-                String email,
-                String password,
-                int gender,
-                Integer[] interests,
-                boolean enabled,
-                String name,
-                int faculty) {
-        this.username = username;
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.gender = gender;
-        this.interests = interests;
-        this.enabled = enabled;
-        this.faculty = faculty;
-    }
 
     public User() {}
 }
