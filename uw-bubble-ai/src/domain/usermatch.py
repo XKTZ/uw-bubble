@@ -98,7 +98,7 @@ class AIModelBasedUserMatcher(UserMatcher):
 
     def match(self, user: User, to: List[User]) -> Dict[int, float]:
         with torch.no_grad():
-            result = self._model(torch.tensor([match_user(user, t) for t in to]).to(self._device))
+            result = self._model(torch.stack([match_user(user, t) for t in to]).to(self._device))
             return {to[i].id: result[i].item() for i in range(len(to))}
 
     def adjust(self, adjust_data: List[Tuple[User, User, float]], train_print: bool = True, test: bool = True):

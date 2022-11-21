@@ -170,7 +170,7 @@ const Modes = {
 export default {
   name: "RegisterView",
   setup() {
-    const mode = ref(Modes.Interests);
+    const mode = ref(Modes.Register);
 
     const email = ref("");
     const password = ref("");
@@ -183,7 +183,7 @@ export default {
 
     const uploadInterest = async () => {
       if (interest.value.length < 3) {
-        ElMessage("Too little interests. There should be 3 of them")
+        ElMessage("Too few interests. There should be 3 of them")
       } else if (interest.value.length > 3) {
         ElMessage("Too much interests. There should be 3 of them")
       } else {
@@ -221,10 +221,15 @@ export default {
 
 <style scoped>
 
+.options {
+  width: 60%;
+  height: 40px;
+}
+
 
 .interact-component {
-  margin-top: 4%;
-  margin-bottom: 4%;
+  margin-top: 2%;
+  margin-bottom: 2%;
 }
 
 </style>

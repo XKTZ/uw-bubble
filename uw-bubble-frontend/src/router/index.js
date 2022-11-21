@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import LoginView from "@/views/LoginView";
 import RegisterView from "@/views/RegisterView";
 import RecommendView from "@/views/RecommendView";
+import MessageView from "@/views/MessageView";
 
 const routes = [
   {
@@ -24,6 +25,11 @@ const routes = [
     path: "/recommend",
     name: "recommend",
     component: RecommendView
+  },
+  {
+    path: "/message",
+    name: "message",
+    component: MessageView
   }
 ]
 
