@@ -46,7 +46,11 @@ public class WebSecurityConfig {
         // public endpoints
         "/users/signup",
         "/users/authenticate",
-        "/users/verify-account/*"
+        "/users/verify-account/*",
+        "/users/gen",
+        "/users/test-match",
+        "/users/adjust",
+        "/users/test"
     };
 
     @Autowired

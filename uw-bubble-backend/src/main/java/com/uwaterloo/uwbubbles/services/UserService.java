@@ -3,12 +3,14 @@ package com.uwaterloo.uwbubbles.services;
 import com.uwaterloo.uwbubbles.config.JwtTokenUtil;
 import com.uwaterloo.uwbubbles.config.JwtUserDetailsService;
 import com.uwaterloo.uwbubbles.dao.User;
+import com.uwaterloo.uwbubbles.dto.AI;
 import com.uwaterloo.uwbubbles.dto.RecommendationRequest;
 import com.uwaterloo.uwbubbles.repositories.UserRepository;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,12 +23,11 @@ import reactor.netty.http.client.HttpClient;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -41,8 +42,6 @@ public class UserService {
 
     @Autowired
     private MailService mailService;
-
-    private WebClient webClient;
 
     public boolean credentialsExist(User user) {
         return usernameExist(user.getUsername()) && emailExist(user.getEmail());
@@ -78,15 +77,19 @@ public class UserService {
 
         WebClient client = WebClient.builder()
                 .clientConnector(new ReactorClientHttpConnector(httpClient))
-                .baseUrl("http://localhost:8080")
+                .baseUrl("http://192.168.43.235:5000")
                 .build();
 
+        var toAI = AI.toAI();
+
+        AI aiUser = toAI.apply(user);
+        List<AI> randomUsers = getRandomUsers().stream().map(toAI).collect(Collectors.toList());
+
         WebClient.RequestBodySpec requestSpec = (WebClient.RequestBodySpec) client.method(HttpMethod.GET)
-                                                            .uri("/users/webclient-test/")
-                                                            .bodyValue(new RecommendationRequest(user, getRandomUsers()));
+                                                            .uri("/user/select/")
+                                                            .bodyValue(new RecommendationRequest(aiUser, randomUsers));
 
-        Map<String, Double> response = requestSpec.retrieve().bodyToMono(Map.class).block();
-
+        Map<String, Double> response = requestSpec.retrieve().bodyToMono(new ParameterizedTypeReference<Map<String, Double>>() {}).block();
         assert response != null;
         Map<Long, Double> res = new HashMap<>();
         for (String k : response.keySet()) {

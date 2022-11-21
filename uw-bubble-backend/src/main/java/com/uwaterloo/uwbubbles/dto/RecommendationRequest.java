@@ -9,9 +9,9 @@ import java.util.List;
 @Data
 
 public class RecommendationRequest implements Serializable {
-    private final User from;
-    private final List<User> to;
-    public RecommendationRequest(User from, List<User> to) {
+    private final AI from;
+    private final List<AI> to;
+    public RecommendationRequest(AI from, List<AI> to) {
         this.from = from;
         this.to = to;
     }
