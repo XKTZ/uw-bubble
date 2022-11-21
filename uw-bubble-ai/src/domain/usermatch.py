@@ -85,9 +85,9 @@ class AIModelBasedUserMatcher(UserMatcher):
     def __init__(self, device: torch.device = torch.device("cpu:0"), log_dir: str = "log",
                  past_length_maintain: int = 32):
         super(AIModelBasedUserMatcher, self).__init__()
-        self._model = UserMatchUpModel(User.feature_size() * 2, [512, 512]).to(device)
+        self._model = UserMatchUpModel(User.feature_size() * 2, [512, 1024, 1024]).to(device)
         self._device = device
-        self._optim = torch.optim.Adam(self._model.parameters(), 1e-4)
+        self._optim = torch.optim.Adam(self._model.parameters(), 2e-4)
         self._loss = nn.MSELoss()
         self._total_train_cnt = 0
         self._total_test_cnt = 0
@@ -205,7 +205,8 @@ class AIModelBasedUserMatcher(UserMatcher):
             self._log.add_scalar(f"AI Model Test Loss", loss_total / max(sz, 1), self._total_test_cnt)
             self._log.add_scalar(f"AI Model Test Distance", dis_total / max(sz, 1), self._total_test_cnt)
 
-            print(f"Testing epoch {self._total_test_cnt} finish, loss {loss_total / max(sz, 1)}, distance {dis_total / max(sz, 1)}")
+            print(
+                f"Testing epoch {self._total_test_cnt} finish, loss {loss_total / max(sz, 1)}, distance {dis_total / max(sz, 1)}")
 
     def close(self):
         self._log.close()

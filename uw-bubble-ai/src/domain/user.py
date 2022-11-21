@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict
 
 import torch
 
@@ -34,6 +34,12 @@ class User:
         array[program] = 1
         return array
 
+    def _program_array_to_program_id(program: List[int]) -> int:
+        for i in range(len(program)):
+            if program[i] != 0:
+                return i
+        return -1
+
     @staticmethod
     def feature_size():
         """
@@ -64,8 +70,13 @@ class User:
         """
         return torch.tensor([self.gender, self.age, *self.program, *self.interests], dtype=torch.float)
 
+    def to_dict(self) -> Dict:
+        return {"gender": self.gender, "age": self.age, "program": User._program_array_to_program_id(self.program),
+                "interests": self.interests}
+
     def __str__(self):
-        return str({"gender": self.gender, "age": self.age, "program": self.program, "interest": self.interests})
+        return str({"gender": self.gender, "age": self.age, "program": User._program_array_to_program_id(self.program),
+                    "interests": self.interests})
 
 
 def match_user(user_from: User, user_to: User) -> torch.Tensor:

@@ -86,6 +86,7 @@ public class UserService {
                                                             .bodyValue(new RecommendationRequest(user, getRandomUsers()));
 
         Map<String, Double> response = requestSpec.retrieve().bodyToMono(Map.class).block();
+
         assert response != null;
         Map<Long, Double> res = new HashMap<>();
         for (String k : response.keySet()) {
