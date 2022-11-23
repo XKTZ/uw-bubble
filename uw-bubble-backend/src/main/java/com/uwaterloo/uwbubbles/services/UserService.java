@@ -48,20 +48,20 @@ public class UserService {
     }
 
     public boolean usernameExist(String username) {
-        return userRepository.findUserByName(username) != null;
+        return userRepository.findUserByUsername(username) != null;
     }
 
     public boolean emailExist(String email) {
-        return userRepository.findUserByName(email) != null;
+        return userRepository.findUserByEmail(email) != null;
     }
 
     public boolean enabled(String username) {
-        User exp = userRepository.findUserByName(username);
+        User exp = userRepository.findUserByUsername(username);
         return exp.isEnabled();
     }
 
     public void enableUser(String username) {
-        User exp = userRepository.findUserByName(username);
+        User exp = userRepository.findUserByUsername(username);
         exp.setEnabled(true);
         userRepository.save(exp);
     }
@@ -100,7 +100,7 @@ public class UserService {
     public String sendVerificationEmail(User user)  {
         final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
         String token = jwtTokenUtil.generateVerificationToken(userDetails);
-        String confirmationUrl = "http://localhost:8080/users/verify-account/" + token;
+        String confirmationUrl = "http://192.168.43.53:8080/users/verify-account/" + token;
         String body = "Please click the verification link below to verify your account" + "\r\n" + confirmationUrl + "\r\n" + "Thank you,\n" + "HashPie Team";
         try {
             mailService.sendEmail("tommypang04@gmail.com", user.getEmail(), body);
@@ -118,7 +118,7 @@ public class UserService {
         final String requestTokenHeader = request.getHeader("Authorization");
         String jwtToken = requestTokenHeader.substring(7);
         String name = jwtTokenUtil.getUsernameFromToken(jwtToken);
-        return userRepository.findUserByName(name);
+        return userRepository.findUserByUsername(name);
     }
 
 }

@@ -19,7 +19,7 @@ public class JwtTokenUtil implements Serializable {
 
     private static final long serialVersionUID = -2550185165626007488L;
 
-    public static final long SESSION_TOKEN_VALIDITY = 12 * 60 * 60; // 12 hrs
+    public static final long SESSION_TOKEN_VALIDITY = 24 * 60 * 60 * 30; // 30 days
 
     public static final long VERIFICATION_TOKEN_VALIDITY = 3650 * 24 * 60 * 60; // 10 Years
 

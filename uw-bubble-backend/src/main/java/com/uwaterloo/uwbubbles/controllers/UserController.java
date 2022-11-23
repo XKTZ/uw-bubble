@@ -8,9 +8,7 @@ import com.uwaterloo.uwbubbles.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -27,7 +25,7 @@ public class UserController {
     private UserRepository userRepository;
 
     @PostMapping("/users/signup")
-    public ResponseEntity<String> signup(User user) {
+    public ResponseEntity<String> signup(@RequestBody User user) {
         if (userService.credentialsExist(user)) {
             if (!userService.enabled(user.getUsername())) {
                 String status = userService.sendVerificationEmail(user);
@@ -74,6 +72,11 @@ public class UserController {
             res.add(new RecommendationResponse(userRepository.getById(id), recommendVal.get(id)));
         }
         return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @GetMapping("/users/loggedin")
+    public ResponseEntity<Boolean> userRecommendation() {
+        return new ResponseEntity<>(true, HttpStatus.OK);
     }
 
 }

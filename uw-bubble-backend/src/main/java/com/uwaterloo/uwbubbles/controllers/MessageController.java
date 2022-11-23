@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
-@CrossOrigin
 public class MessageController {
 
     @Autowired
@@ -22,14 +21,17 @@ public class MessageController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/message/publish")
-    public ResponseEntity<String> sendMessage(@RequestBody Message msg) {
+    @PostMapping("/message/publish")
+    public ResponseEntity<String> sendMessage(HttpServletRequest request, @RequestBody Message msg) {
+        User user = userService.getUserFromJwt(request);
+        long senderID = user.getId();
+        msg.setSender(senderID);
         messageService.saveMessage(msg);
         return new ResponseEntity<>("Message sent", HttpStatus.OK);
     }
 
     @GetMapping("/message/find")
-    public ResponseEntity<List<Message>> getMessages(HttpServletRequest request, @RequestBody long pairId) {
+    public ResponseEntity<List<Message>> getMessages(HttpServletRequest request, @RequestParam long pairId) {
         User user = userService.getUserFromJwt(request);
         List<Message> messages = messageService.findMessagesBetween(user.getId(), pairId);
         return new ResponseEntity<>(messages, HttpStatus.OK);
