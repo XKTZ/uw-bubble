@@ -10,7 +10,10 @@
 
 <script>
 
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
+import {assertLogin, needLogin} from "@/utils/UserUtil";
+import {ElMessage} from "element-plus";
+import router from "@/router";
 
 const getRecommendation = async () => {
   return [];
@@ -18,8 +21,14 @@ const getRecommendation = async () => {
 
 export default {
   name: "RecommendView",
-  async setup() {
-    const recommendation = ref(await getRecommendation());
+  setup() {
+    const recommendation = ref([]);
+    onMounted(async () => {
+      // await assertLogin();
+    })
+    return {
+
+    }
   }
 }
 </script>

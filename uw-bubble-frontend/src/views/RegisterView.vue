@@ -2,22 +2,16 @@
   <el-container>
     <el-header style="padding-top: 6%; padding-bottom: 4%;">
       <div style="font-size: 180%;">
-        Welcome to UWaterloo Bubble!
+        UWaterloo Bubble!
       </div>
     </el-header>
     <el-main style="margin: auto;">
       <div v-if="mode === Modes.Register">
+        <div class="interact-component options" style="font-size: 120%; width: 100%;">
+          Start to register a UWBubble account
+        </div>
         <el-input class="interact-component options" v-model="email" placeholder="Email"/>
         <el-input class="interact-component options" v-model="password" placeholder="Password" show-password/>
-        <el-select class="interact-component options" v-model="faculty" placeholder="Faculty" size="large">
-          <el-option
-              v-for="f in Faculties"
-              :key="f.value"
-              :label="f.name"
-              :value="f.value"
-          />
-        </el-select>
-        <br>
         <el-button class="interact-component options" style="width: 60%;" @click="register" type="primary">
           Register
         </el-button>
@@ -26,34 +20,61 @@
         </el-button>
       </div>
 
+      <div v-if="mode === Modes.Info">
+        <el-input class="interact-component options" v-model="name" placeholder="Name" size="large"/>
+        <el-input class="interact-component options" v-model="username" placeholder="Username" size="large"/>
+        <el-input-number class="interact-component options" v-model="age" placeholder="Age" size="large"/>
+        <el-select class="interact-component options" v-model="gender" placeholder="Gender" size="large">
+          <el-option
+              v-for="g in Genders"
+              :key="g.id"
+              :label="g.name"
+              :value="g.id"
+          />
+        </el-select>
+        <el-select class="interact-component options" v-model="faculty" placeholder="Faculty" size="large">
+          <el-option
+              v-for="f in Faculties"
+              :key="f.value"
+              :label="f.name"
+              :value="f.value"
+          />
+        </el-select>
+        <el-button class="interact-component options" @click="uploadInfo" type="primary"
+                   style="width: 60%; height: 45px; font-weight: 600;">
+          Submit
+        </el-button>
+      </div>
+
       <div v-if="mode === Modes.Interests">
         <div class="interact-component options" style="font-size: 120%; width: 100%;">
           Choose 3 things that interest you the most
         </div>
         <el-select
-          v-model="interest"
-          multiple
-          placeholder="Your Interest"
-          class="interact-component"
-          style="width: 100%;"
+            v-model="interest"
+            multiple
+            placeholder="Your Interest"
+            class="interact-component"
+            style="width: 100%;"
         >
           <el-option
               v-for="i in Interests"
               :key="i.id"
               :label="i.name"
-              :value="i.name"
+              :value="i.id"
           />
         </el-select>
-        <el-button class="interact-component options" @click="uploadInterest" style="width: 60%; height: 45px; font-weight: 600;">
+        <el-button class="interact-component options" @click="uploadInterest"
+                   style="width: 60%; height: 45px; font-weight: 600;">
           Finish
         </el-button>
       </div>
 
       <div v-if="mode === Modes.Success">
-        <div style="font-size: 125%; font-weight: 600;">
+        <div style="width: 100%; font-size: 125%; font-weight: 600;">
           Register Success! Welcome.
         </div>
-        <el-button @click="">Go to page</el-button>
+        <el-button class="interact-component options" @click="toLogin">Go to page</el-button>
       </div>
     </el-main>
     <el-footer>
@@ -66,119 +87,45 @@
 import {ref} from "vue";
 import router from "@/router";
 import {ElMessage} from "element-plus";
-
-const Faculties = ref([
-  {
-    name: "Arts",
-    value: 0
-  },
-  {
-    name: "Engineering",
-    value: 1
-  },
-  {
-    name: "Environment",
-    value: 2
-  },
-  {
-    name: "Health",
-    value: 3
-  },
-  {
-    name: "Mathematics",
-    value: 4
-  },
-  {
-    name: "Science",
-    value: 5
-  }
-]);
-
-const Interests = ref([
-  {
-    name: "Interest 0",
-    id: 0
-  },
-  {
-    name: "Interest 1",
-    id: 1
-  },
-  {
-    name: "Interest 2",
-    id: 2
-  },
-  {
-    name: "Interest 3",
-    id: 3
-  },
-  {
-    name: "Interest 4",
-    id: 4
-  },
-  {
-    name: "Interest 5",
-    id: 5
-  },
-  {
-    name: "Interest 6",
-    id: 6
-  },
-  {
-    name: "Interest 7",
-    id: 7
-  },
-  {
-    name: "Interest 8",
-    id: 8
-  },
-  {
-    name: "Interest 9",
-    id: 9
-  },
-  {
-    name: "Interest 10",
-    id: 10
-  },
-  {
-    name: "Interest 11",
-    id: 11
-  },
-  {
-    name: "Interest 12",
-    id: 12
-  },
-  {
-    name: "Interest 13",
-    id: 13
-  },
-  {
-    name: "Interest 14",
-    id: 14
-  },
-  {
-    name: "Interest 15",
-    id: 15
-  },
-]);
+import {Genders, Faculties, Interests} from "@/utils/UserUtil";
+import axios from "axios";
 
 const Modes = {
   Register: 0,
-  Interests: 1,
-  Success: 2
-}
+  Info: 1,
+  Interests: 2,
+  Success: 3
+};
 
 export default {
   name: "RegisterView",
   setup() {
     const mode = ref(Modes.Register);
 
-    const email = ref("");
-    const password = ref("");
-    const faculty = ref(0);
+    const email = ref(null);
+    const password = ref(null);
+
+    const name = ref(null);
+    const username = ref(null);
+    const faculty = ref(null);
+    const age = ref(null);
+    const gender = ref(null);
     const interest = ref([]);
 
-    const register = async () => {
-      mode.value = Modes.Interests
+    const register = () => {
+      if (email.value === null || password.value === null) {
+        ElMessage("Information not fully provided. Please fill all info and try again");
+      } else {
+        mode.value = Modes.Info;
+      }
+    };
+
+    const uploadInfo = () => {
+      if (faculty.value === null || age.value === null || gender.value === null) {
+        ElMessage("Information not fully provided. Please fill all info and try again");
+      } else {
+        mode.value = Modes.Interests;
+      }
     };
 
     const uploadInterest = async () => {
@@ -187,12 +134,41 @@ export default {
       } else if (interest.value.length > 3) {
         ElMessage("Too much interests. There should be 3 of them")
       } else {
-        mode.value = 3;
-      }
-    };
+        let interests = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        for (let id of interest.value) {
+          interests[id] = 1;
+        }
+        try {
+          let result = await axios({
+            method: 'post',
+            url: '/users/signup',
+            data: {
+              name: name.value,
+              username: username.value,
+              email: email.value,
+              password: password.value,
+              faculty: faculty.value,
+              gender: gender.value,
+              age: age.value,
+              interests: interests
+            }
+          });
+          ElMessage(result.data)
+          router.push("/login");
+        } catch (e) {
+          ElMessage(e.response.data)
 
-    const toMain = async () => {
-      router.push("/main")
+          name.value = null;
+          username.value = null;
+          email.value = null;
+          password.value = null;
+          faculty.value = null;
+          gender.value = null;
+          age.value = null;
+          interest.value = [];
+          mode.value = Modes.Register;
+        }
+      }
     };
 
     const toLogin = () => {
@@ -202,13 +178,20 @@ export default {
     return {
       email,
       password,
+
+      name,
+      username,
       faculty,
+      age,
+      gender,
       interest,
 
       register,
+      uploadInfo,
       uploadInterest,
       toLogin,
 
+      Genders,
       Faculties,
       Interests,
 
@@ -228,8 +211,8 @@ export default {
 
 
 .interact-component {
-  margin-top: 2%;
-  margin-bottom: 2%;
+  margin-top: 1%;
+  margin-bottom: 1%;
 }
 
 </style>

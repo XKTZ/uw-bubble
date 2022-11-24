@@ -6,7 +6,7 @@
       </div>
     </el-header>
     <el-main style="margin: auto;">
-      <el-input class="interact-component options" v-model="username" placeholder="Email"/>
+      <el-input class="interact-component options" v-model="username" placeholder="Username"/>
       <el-input class="interact-component options" v-model="password" placeholder="Password" show-password/>
       <el-button class="interact-component options" style="width: 60%;" @click="login" type="primary">
         Login
@@ -25,6 +25,7 @@
 import {ref} from "vue";
 import {ElButton, ElContainer, ElInput} from 'element-plus';
 import router from "@/router";
+import axios from "axios";
 
 const LOGIN_MODE = 0;
 const REGISTER_MODE = 1;
@@ -37,9 +38,18 @@ export default {
     const password = ref("");
     const mode = ref(LOGIN_MODE);
 
-    const login = ref(() => {
-      console.log(`login ${username} & ${password}`);
-    });
+    const login = async () => {
+      try {
+        let result = await axios.post('/users/authenticate', {
+          username: username.value,
+          password: password.value
+        });
+        localStorage.setItem('jwt', result.data['jwttoken']);
+        await router.push("/recommend");
+      } catch (e) {
+        console.log(e)
+      }
+    };
 
     const toRegister = ref(() => {
       router.push("/register");
