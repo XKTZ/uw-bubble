@@ -4,7 +4,7 @@ import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.util.Date;
 
 @Data
 @Entity
@@ -19,6 +19,7 @@ public class Message {
     String type;
 
     @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
     Date date;
 
     public Message(long sender, long recipient, String content, String type, Date date) {

@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    public User findUserByName(String s);
+    public User findUserByUsername(String s);
     public User findUserById(long id);
     public User findUserByEmail(String s);
     @Query(value = "SELECT * FROM account.users ORDER BY random() LIMIT 64", nativeQuery = true)

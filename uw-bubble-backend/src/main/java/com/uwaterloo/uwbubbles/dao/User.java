@@ -1,5 +1,7 @@
 package com.uwaterloo.uwbubbles.dao;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import com.uwaterloo.uwbubbles.types.IntArrayUserType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,6 +10,7 @@ import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -26,6 +29,7 @@ public class User {
     private String username;
     private String name;
     private String email;
+    @JsonIgnore
     private String password;
 
     // 0 - Arts
@@ -48,4 +52,9 @@ public class User {
     private Integer[] interests;
 
     public User() {}
+
+    @JsonSetter
+    public void setInterests(List<Integer> interests) {
+        this.interests = interests.toArray(Integer[]::new);
+    }
 }

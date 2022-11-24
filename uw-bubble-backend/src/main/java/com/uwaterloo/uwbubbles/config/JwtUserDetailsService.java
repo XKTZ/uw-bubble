@@ -19,7 +19,7 @@ public class JwtUserDetailsService implements UserDetailsService {
     private UserRepository userRepository;
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, DisabledException {
-        return new User(username, new BCryptPasswordEncoder().encode(this.userRepository.findUserByName(username).getPassword()), new ArrayList<>());
+        return new User(username, new BCryptPasswordEncoder().encode(this.userRepository.findUserByUsername(username).getPassword()), new ArrayList<>());
     }
 
 }
