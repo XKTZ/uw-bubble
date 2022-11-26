@@ -156,6 +156,7 @@ export default {
           ElMessage(result.data)
           router.push("/login");
         } catch (e) {
+          console.log(e)
           ElMessage(e.response.data)
 
           name.value = null;
