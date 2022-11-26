@@ -30,15 +30,14 @@ public class AI implements Serializable {
         return (usr) -> new AI(usr.getId(), usr.getGender(), usr.getAge(), usr.getInterests(), usr.getFaculty());
     }
 
-    private static final RandomStringGenerator STRING_GENERATOR = new RandomStringGenerator.Builder().build();
 
     public static Function<AI, User> toUser() {
         return (ai) -> new User(
                 null,
-                STRING_GENERATOR.generate(5),
-                STRING_GENERATOR.generate(5),
-                STRING_GENERATOR.generate(5),
-                STRING_GENERATOR.generate(5),
+                RandomStringUtils.randomAlphabetic(10),
+                RandomStringUtils.randomAlphabetic(10),
+                RandomStringUtils.randomAlphabetic(10),
+                RandomStringUtils.randomAlphabetic(10),
                 ai.getProgram(),
                 ai.getGender(),
                 ai.getAge(),

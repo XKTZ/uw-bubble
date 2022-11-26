@@ -1,8 +1,9 @@
 package com.uwaterloo.uwbubbles.controllers;
 
+import com.uwaterloo.uwbubbles.dao.Message;
 import com.uwaterloo.uwbubbles.dao.User;
-import com.uwaterloo.uwbubbles.dto.AI;
 import com.uwaterloo.uwbubbles.dto.RecommendationResponse;
+import com.uwaterloo.uwbubbles.repositories.MessageRepository;
 import com.uwaterloo.uwbubbles.repositories.UserRepository;
 import com.uwaterloo.uwbubbles.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 public class UserController {
@@ -23,6 +26,9 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private MessageRepository messageRepository;
 
     @PostMapping("/users/signup")
     public ResponseEntity<String> signup(@RequestBody User user) {
@@ -72,6 +78,18 @@ public class UserController {
             res.add(new RecommendationResponse(userRepository.getById(id), recommendVal.get(id)));
         }
         return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @GetMapping("/users/communications")
+    public ResponseEntity<List<User>> userCommunication(HttpServletRequest request) {
+        User user = userService.getUserFromJwt(request);
+        var usrs = Stream.concat(
+                messageRepository.findMessagesBySender(user.getId()).stream().map(Message::getRecipient),
+                messageRepository.findMessagesByRecipient(user.getId()).stream().map(Message::getSender))
+                .distinct()
+                .map(userRepository::findUserById)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(usrs, HttpStatus.OK);
     }
 
     @GetMapping("/users/loggedin")

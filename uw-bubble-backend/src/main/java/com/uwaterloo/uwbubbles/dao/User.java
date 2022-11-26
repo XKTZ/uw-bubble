@@ -1,6 +1,8 @@
 package com.uwaterloo.uwbubbles.dao;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.uwaterloo.uwbubbles.types.IntArrayUserType;
 import lombok.AllArgsConstructor;
@@ -29,7 +31,7 @@ public class User {
     private String username;
     private String name;
     private String email;
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     // 0 - Arts
@@ -57,4 +59,5 @@ public class User {
     public void setInterests(List<Integer> interests) {
         this.interests = interests.toArray(Integer[]::new);
     }
+
 }
