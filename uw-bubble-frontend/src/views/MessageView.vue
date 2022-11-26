@@ -3,15 +3,25 @@
     <el-container>
       <el-header
           :style="{height: headerHeight, fontSize: '24px', fontWeight: '650', paddingTop: '20px', paddingBottom: '20px'}">
-        {{ opponentName }}
+        <el-row>
+          <el-col :span="4">
+            <el-button @click="back" style="width: 80%; height: 100%;">
+              Back
+            </el-button>
+          </el-col>
+          <el-col :span="16">
+            {{ opponentName }}
+          </el-col>
+          <el-col :span="4"></el-col>
+        </el-row>
       </el-header>
       <el-main>
         <div style="width: 100%;">
 
           <el-scrollbar ref="scrollBar" :height="messagesHeight">
-            <opponent-message-component v-for="m in messages"
-                                        :message="m.text"
-                                        :type="m.type"
+            <message-component v-for="m in messages"
+                               :message="m.text"
+                               :type="m.type"
             />
           </el-scrollbar>
         </div>
@@ -22,15 +32,14 @@
         </div>
       </el-main>
     </el-container>
-
   </div>
 </template>
 
 <script>
 
-import {onMounted, ref} from "vue";
+import {onMounted, onUnmounted, ref} from "vue";
 import {useRoute, useRouter} from 'vue-router';
-import OpponentMessageComponent from "@/components/MessageComponent";
+import MessageComponent from "@/components/MessageComponent";
 import {assertLogin, getId, MessageSender} from "@/utils/UserUtil";
 import {getReactiveVariable, registerReactiveVariable} from "@/utils/windows";
 import axios from "axios";
@@ -46,34 +55,39 @@ registerReactiveVariable('messagesHeight', (w, h) => {
 
 export default {
   name: "MessageView",
-  components: {OpponentMessageComponent},
-  setup() {
+  components: {MessageComponent},
+  props: {
+    opponent: {
+      required: true
+    },
+    lastPage: {
+      required: true
+    }
+  },
+  setup({opponent: o, lastPage}) {
+    lastPage = parseInt(lastPage);
+
     const router = useRouter();
     const route = useRoute();
+
     const messages = ref([]);
     let last = messages.value.length;
 
     const messageInput = ref();
 
     const id = ref(getId());
-    const opponentId = ref(undefined);
+    const opponentId = ref(parseInt(o));
 
     const headerHeight = getReactiveVariable('messageHeaderHeight');
     const messagesHeight = getReactiveVariable("messagesHeight");
-    const opponentName = ref("Opponent");
+    const opponentName = ref("Match");
 
     const scrollBar = ref();
 
+    const refresher = ref(undefined);
+
     const getOpponentId = () => {
-      if (opponentId.value === undefined) {
-        if (route.params.id === undefined) {
-          return opponentId.value = parseInt(prompt("Opponent's id"));
-        } else {
-          return opponentId.value = route.params.id;
-        }
-      } else {
-        return opponentId.value;
-      }
+      return opponentId.value;
     }
 
     const scrolling = () => {
@@ -132,10 +146,19 @@ export default {
       }
     };
 
+    const back = () => {
+      if (lastPage === 0) {
+        router.push('/recommend')
+      } else {
+        router.push('/communications')
+      }
+
+    }
+
     onMounted(async () => {
       await assertLogin();
       await refreshMessages();
-      setInterval(refreshMessages, 2500);
+      await (refresher.value = setInterval(refreshMessages, 2500));
     });
 
     const onSend = async (e) => {
@@ -152,6 +175,10 @@ export default {
       messagesHeight.value = window.innerHeight * .7;
     });
 
+    onUnmounted(() => {
+      clearInterval(refresher.value)
+    });
+
     return {
       opponentName,
 
@@ -164,7 +191,9 @@ export default {
 
       MessageSender,
 
-      scrollBar
+      scrollBar,
+
+      back
     }
   }
 }

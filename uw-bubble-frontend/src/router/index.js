@@ -4,6 +4,7 @@ import LoginView from "@/views/LoginView";
 import RegisterView from "@/views/RegisterView";
 import RecommendView from "@/views/RecommendView";
 import MessageView from "@/views/MessageView";
+import CommunicationsView from "@/views/CommunicationsView";
 
 const routes = [
   {
@@ -27,9 +28,15 @@ const routes = [
     component: RecommendView
   },
   {
-    path: "/message",
+    path: "/communications",
+    name: "communications",
+    component: CommunicationsView
+  },
+  {
+    path: "/message/:lastPage/:opponent",
     name: "message",
-    component: MessageView
+    component: MessageView,
+    props: true
   }
 ]
 

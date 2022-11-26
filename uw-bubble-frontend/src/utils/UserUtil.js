@@ -44,67 +44,67 @@ export const MessageSender = {
 
 export const Interests = ref([
     {
-        name: "Interest 0",
+        name: "Sports",
         id: 0
     },
     {
-        name: "Interest 1",
+        name: "Movie",
         id: 1
     },
     {
-        name: "Interest 2",
+        name: "Reading",
         id: 2
     },
     {
-        name: "Interest 3",
+        name: "Gaming",
         id: 3
     },
     {
-        name: "Interest 4",
+        name: "Pets",
         id: 4
     },
     {
-        name: "Interest 5",
+        name: "Technology",
         id: 5
     },
     {
-        name: "Interest 6",
+        name: "Programming",
         id: 6
     },
     {
-        name: "Interest 7",
+        name: "Mathematics",
         id: 7
     },
     {
-        name: "Interest 8",
+        name: "Foods",
         id: 8
     },
     {
-        name: "Interest 9",
+        name: "Art",
         id: 9
     },
     {
-        name: "Interest 10",
+        name: "Literature",
         id: 10
     },
     {
-        name: "Interest 11",
+        name: "Exercise",
         id: 11
     },
     {
-        name: "Interest 12",
+        name: "Camping",
         id: 12
     },
     {
-        name: "Interest 13",
+        name: "Photography",
         id: 13
     },
     {
-        name: "Interest 14",
+        name: "Music",
         id: 14
     },
     {
-        name: "Interest 15",
+        name: "Public Speaking",
         id: 15
     },
 ]);
